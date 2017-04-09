@@ -41,6 +41,7 @@ Configuration Parameters are:
 - **categoricalFeaturesInfo** (default value *Empty map*): a map that contains for each categorical feature (identified by its index) the number of categorical values. Similar to the labels if a categorical features contains *L* possible values, it can take values {*0*, ..., *L - 1*}
 - **thresholdsFeatureInfo** (default value *Empty map*): a map that contains for each continuous feature (identified by its index) a list of cores of each triangular fuzzy set (FDTs will create a string triangular fuzzy partition from such lists)
 - **minInstancesPerNode** (default value *1*): a *int* to store the minimum number of examples that each leaf must contain
+- **minFuzzyInstancesPerNode** (default value *0*): a *double* to store the minimum node fuzzy cardinality to be inspected in the stop condition. Indeed, *node fuzzy cardinality* is computed as the sum of the membership degrees of all points in the dataset from the root to the node
 - **minImpurityRatioPerNode** (default value *0*): a *double* to store the minimum ratio thresholds of impurity that must be true in each node
 - **infoGain** (default value *0.00001*): a *double* to store the minimum information gain threshold that must be true in each node (If not true the node is not split).
 - **subsamplingRate** (default value *1*): a double to store the ratio of subsampling (if 1 all dataset is considered)
@@ -152,15 +153,16 @@ thresholdsFeatureInfo.put(1, Arrays.asList(2.0, 2.6, 3.2, 3.8, 4.4)); // Feature
 thresholdsFeatureInfo.put(2, Arrays.asList(1.0, 2.475, 3.95, 6.9)); // Feature 2 -> 4 Fuzzy sets
 thresholdsFeatureInfo.put(3, Arrays.asList(0.1, 1.9, 2.6)); // Feature 3 -> 3 Fuzzy sets
 Integer minInstancesPerNode = 1;
+Double minFuzzyInstancesPerNode = 0D;
 Double minImpurityRatioPerNode = 1D;
-Double minInfoGain = 0D;
+Double minInfoGain = 0.000001;
 Double subsamplingFraction = 1D;
 
 // Train a FuzzyBinaryDecisionTree model.
 final FuzzyDecisionTreeModel fdtModel = FuzzyBinaryDecisionTree.trainFromJava(trainingData,
         impurity, tNorm, maxDepth, maxBins, numClasses,
 		categoricalFeaturesInfo, thresholdsFeatureInfo, minInstancesPerNode,
-		subsamplingFraction, minInfoGain, subsamplingFraction);
+		minFuzzyInstancesPerNode, minImpurityRatioPerNode, minInfoGain, subsamplingFraction);
 
 // Evaluate model on test instances and compute test error
 JavaPairRDD<Double, Double> predictionAndLabel =
@@ -226,16 +228,12 @@ val categoricalFeaturesInfo = Map(
         2 -> 7) // Feature 2 has 7 different values (values should be 0-based, namely {0,1,2})
 val thresholdsFeatureInfo =  Map.empty[Int, List[Double]]
 val minInstancesPerNode = trainingData.count / 10000; (0.01% of the total number of instances)
-val minImpurityRatioPerNode = 1D;
-val minInfoGain = 0D;
-val subsamplingFraction = 1D;
 
 // Train a FuzzyMultiDecisionTree model for classification.
 val fdtModel = FuzzyMultiDecisionTree.train(trainingData, 
         impurity, tNorm, maxDepth, maxBins, numClasses,
         categoricalFeaturesInfo, thresholdsFeatureInfo,
-        minInstancesPerNode, minImpurityRatioPerNode,
-        minInfoGain, subsamplingFraction)
+        minInstancesPerNode)
 
 // Evaluate model on test instances and compute test error
 val labelAndPreds = testData.map { point =>
@@ -302,15 +300,16 @@ categoricalFeaturesInfo.put(1, 2); // Feature 0 has 2 different values (values s
 categoricalFeaturesInfo.put(2, 7); // Feature 0 has 7 different values (values should be 0-based, namely {0,1,2}) 
 Map<Integer, List<Double>> thresholdsFeatureInfo =  new HashMap<Integer, List<Double>>();
 Integer minInstancesPerNode = trainingData.count() / 10000; (0.01% of the total number of instances)
+Double minFuzzyInstancesPerNode = 0D;
 Double minImpurityRatioPerNode = 1D;
-Double minInfoGain = 0D;
+Double minInfoGain = 0.000001;
 Double subsamplingFraction = 1D;
 
 // Train a FuzzyBinaryDecisionTree model.
 final FuzzyDecisionTreeModel fdtModel = FuzzyMultiDecisionTree.trainFromJava(trainingData,
         impurity, tNorm, maxDepth, maxBins, numClasses,
 		categoricalFeaturesInfo, thresholdsFeatureInfo, minInstancesPerNode,
-		subsamplingFraction, minInfoGain, subsamplingFraction);
+		minFuzzyInstancesPerNode, minImpurityRatioPerNode, minInfoGain, subsamplingFraction);
 
 // Evaluate model on test instances and compute test error
 JavaPairRDD<Double, Double> predictionAndLabel =

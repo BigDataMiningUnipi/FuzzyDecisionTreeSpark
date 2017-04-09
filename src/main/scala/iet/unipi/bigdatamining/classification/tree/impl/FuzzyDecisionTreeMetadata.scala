@@ -33,7 +33,11 @@ import iet.unipi.bigdatamining.classification.tree.configuration.SplitType.{Bina
  * @param tNorm the tNorm used for learning the Fuzzy Decision Tree
  * @param maxDepth maximum depth of Fuzzy Decision Tree
  * @param maxBins maximum number of bins for each feature
- * @param minInstancesPerNode minimum number of examples that each leaf must contains
+ * @param minInstancesPerNode minimum number of examples to be inspected in the stop condition (default 1)
+ * @param minFuzzyInstancesPerNode minimum node fuzzy cardinality to be inspected in the stop condition,
+ *                                 where the <i>node fuzzy cardinality</i> is computed as the sum
+ *                                 of the membership degrees of all points in the dataset
+ *                                 from the root to the node
  * @param minImpurityRatioPerNode minimum ratio threshold  of impurity that must be true in each node
  * @param minInfoGain minimum information gain threshold that must be true in each node.
  */
@@ -52,6 +56,7 @@ private[tree] class FuzzyDecisionTreeMetadata(
     val maxDepth: Int,
     val maxBins: Int,
     val minInstancesPerNode: Int,
+    val minFuzzyInstancesPerNode: Double,
     val minImpurityRatioPerNode: Double,
     val minInfoGain: Double) extends Serializable {
 
@@ -272,7 +277,7 @@ private[tree] object FuzzyDecisionTreeMetadata extends Logging {
       strategy.categoricalFeaturesInfo, fuzzySetFeaturesArity.toMap, numFeatureBin,
       unorderedFeatures, featureIndexAndIndexInPartitionToId, idToFeatureIndexAndIndexInPartition,
       impurity, tNorm, strategy.maxDepth, numFeatureBin.values.max, strategy.minInstancesPerNode,
-      strategy.minImpurityRatioPerNode, strategy.minInfoGain)
+      strategy.minFuzzyInstancesPerNode, strategy.minImpurityRatioPerNode, strategy.minInfoGain)
   }
   
   /**

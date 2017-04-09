@@ -6,10 +6,10 @@ import java.math.RoundingMode
 import iet.unipi.bigdatamining.classification.tree.configuration.FDTStrategy
 import iet.unipi.bigdatamining.classification.tree.impl.FuzzyDecisionTreeMetadata
 import iet.unipi.bigdatamining.classification.tree.model.{FuzzyDecisionTreeModel, PredictStats}
-import iet.unipi.bigdatamining.classification.tree.model.multi.MultiNode
 import iet.unipi.bigdatamining.fuzzy.fuzzyset.{SingletonFuzzySet, TriangularFuzzySet}
 import com.holdenkarau.spark.testing.SharedSparkContext
 import iet.unipi.bigdatamining.fuzzy.tnorm.{MinTNorm, ProductTNorm}
+import iet.unipi.bigdatamining.classification.tree.model.multi.MultiNode
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.tree.DecisionTree
@@ -59,7 +59,7 @@ class FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
       maxDepth = 2,
       numClasses = 2,
       maxBins = 100,
-      categoricalFeaturesInfo = Map(0 -> 2, 1-> 2))
+      categoricalFeaturesInfo = Map(0 -> 2, 1 -> 2))
 
     val metadata = FuzzyDecisionTreeMetadata.buildMetadata(rdd, strategy)
     metadata.isUnordered(featureIndex = 0) should be (false)
@@ -100,7 +100,7 @@ class FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
       maxDepth = 2,
       numClasses = 100,
       maxBins = 100,
-      categoricalFeaturesInfo = Map(0 -> 10, 1-> 10))
+      categoricalFeaturesInfo = Map(0 -> 10, 1 -> 10))
     // 2^(10-1) - 1 > 100, so categorical features will be ordered
 
     val metadata = FuzzyDecisionTreeMetadata.buildMetadata(rdd, strategy)
@@ -236,7 +236,7 @@ class FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
     val maxDepth = 3
     val maxBins = 100
     val numClasses = 2
-    val categoricalFeaturesInfo = Map(0 -> 2, 1-> 2)
+    val categoricalFeaturesInfo = Map(0 -> 2, 1 -> 2)
     val thresholdsFeatureInfo = Map.empty[Int, Array[Double]]
     val fdtModel = FuzzyBinaryDecisionTree.train(rdd, impurity, tNorm, maxDepth, maxBins, numClasses,
       categoricalFeaturesInfo, thresholdsFeatureInfo)
@@ -245,7 +245,7 @@ class FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
     val dtModel = DecisionTree.trainClassifier(
       input = rdd,
       numClasses = 2,
-      categoricalFeaturesInfo = Map(0 -> 2, 1-> 2),
+      categoricalFeaturesInfo = Map(0 -> 2, 1 -> 2),
       impurity = "entropy",
       maxDepth = 3,
       maxBins = 100)
@@ -274,7 +274,7 @@ class FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
     val maxDepth = 3
     val maxBins = 100
     val numClasses = 2
-    val categoricalFeaturesInfo = Map(0 -> 10, 1-> 10)
+    val categoricalFeaturesInfo = Map(0 -> 10, 1 -> 10)
     val thresholdsFeaturesInfo = Map.empty[Int, Array[Double]]
 
     // 2^(10-1) - 1 > 100, so categorical features will be ordered
@@ -285,7 +285,7 @@ class FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
     val dtModel = DecisionTree.trainClassifier(
       input = rdd,
       numClasses = 2,
-      categoricalFeaturesInfo = Map(0 -> 10, 1-> 10),
+      categoricalFeaturesInfo = Map(0 -> 10, 1 -> 10),
       impurity = "entropy",
       maxDepth = 3,
       maxBins = 100)
@@ -314,7 +314,7 @@ class FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
     val maxDepth = 3
     val maxBins = 100
     val numClasses = 2
-    val categoricalFeaturesInfo = Map(0 -> 2, 1-> 2)
+    val categoricalFeaturesInfo = Map(0 -> 2, 1 -> 2)
     val thresholdsFeaturesInfo = Map.empty[Int, Array[Double]]
 
     // Run Fuzzy Binary Decision Tree
@@ -352,13 +352,13 @@ class FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
     val thresholdsFeaturesInfo = Map.empty[Int, Array[Double]]
 
     // Run Fuzzy Binary Decision Tree
-    val binaryCategoricalFeaturesInfo = Map(0 -> 10, 1-> 10)
+    val binaryCategoricalFeaturesInfo = Map(0 -> 10, 1 -> 10)
     // 2^(10-1) - 1 > 100, so categorical features will be ordered
     val binaryModel = FuzzyBinaryDecisionTree.train(rdd, impurity, tNorm, maxDepth, maxBins,
       numClasses, binaryCategoricalFeaturesInfo, thresholdsFeaturesInfo)
 
     // Run Fuzzy Multi Decision Tree
-    val multiCategoricalFeaturesInfo = Map(0 -> 2, 1-> 2)
+    val multiCategoricalFeaturesInfo = Map(0 -> 2, 1 -> 2)
     val multiModel = FuzzyMultiDecisionTree.train(rdd, impurity, tNorm, maxDepth, maxBins,
       numClasses, multiCategoricalFeaturesInfo, thresholdsFeaturesInfo)
 
@@ -388,7 +388,7 @@ class FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
     val maxBins = 100
     val numClasses = 2
     val categoricalFeaturesInfo = Map.empty[Int, Int]
-    val thresholdsFeatureInfo = Map(0 -> Array(0D, 0.5D, 1D), 1-> Array(0D, 0.5D, 1D))
+    val thresholdsFeatureInfo = Map(0 -> Array(0D, 0.5D, 1D), 1 -> Array(0D, 0.5D, 1D))
     val fdtModel = FuzzyBinaryDecisionTree.train(rdd, impurity, tNorm, maxDepth, maxBins,
       numClasses, categoricalFeaturesInfo, thresholdsFeatureInfo)
 
@@ -396,7 +396,7 @@ class FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
     val dtModel = DecisionTree.trainClassifier(
       input = rdd,
       numClasses = 2,
-      categoricalFeaturesInfo = Map(0 -> 10, 1-> 10),
+      categoricalFeaturesInfo = Map(0 -> 10, 1 -> 10),
       impurity = "entropy",
       maxDepth = 3,
       maxBins = 100)
@@ -431,10 +431,10 @@ class FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
     val numClasses = 3
     val categoricalFeaturesInfo = Map.empty[Int, Int]
     val thresholdsFeatureInfo = Map(
-        0 -> Array(4.3, 5.2, 6.1, 7.0, 7.9),
-        1 -> Array(2.0, 2.6, 3.2, 3.8, 4.4),
-        2 -> Array(1.0, 2.475, 3.95, 5.425, 6.9),
-        3 -> Array(0.1, 0.7, 1.3, 1.9, 2.6))
+      0 -> Array(4.3, 5.2, 6.1, 7.0, 7.9),
+      1 -> Array(2.0, 2.6, 3.2, 3.8, 4.4),
+      2 -> Array(1.0, 2.475, 3.95, 5.425, 6.9),
+      3 -> Array(0.1, 0.7, 1.3, 1.9, 2.6))
     val fdtModel = FuzzyBinaryDecisionTree.train(traRdd, impurity, tNorm, maxDepth, maxBins,
       numClasses, categoricalFeaturesInfo, thresholdsFeatureInfo)
 
@@ -490,10 +490,10 @@ class FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
     val numClasses = 3
     val categoricalFeaturesInfo = Map.empty[Int, Int]
     val thresholdsFeatureInfo = Map(
-        0 -> Array(4.3, 5.2, 6.1, 7.0, 7.9),
-        1 -> Array(2.0, 2.6, 3.2, 3.8, 4.4),
-        2 -> Array(1.0, 2.475, 3.95, 5.425, 6.9),
-        3 -> Array(0.1, 0.7, 1.3, 1.9, 2.6))
+      0 -> Array(4.3, 5.2, 6.1, 7.0, 7.9),
+      1 -> Array(2.0, 2.6, 3.2, 3.8, 4.4),
+      2 -> Array(1.0, 2.475, 3.95, 5.425, 6.9),
+      3 -> Array(0.1, 0.7, 1.3, 1.9, 2.6))
     val fdtModel = FuzzyMultiDecisionTree.train(traRdd, impurity, tNorm, maxDepth, maxBins,
       numClasses, categoricalFeaturesInfo, thresholdsFeatureInfo)
 
@@ -549,17 +549,17 @@ class FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
     val numClasses = 3
     val categoricalFeaturesInfo = Map.empty[Int, Int]
     val thresholdsFeatureInfo = Map(
-        0 -> Array(4.3, 5.2, 6.1, 7.0, 7.9),
-        1 -> Array(2.0, 2.6, 3.2, 3.8, 4.4),
-        2 -> Array(1.0, 2.475, 3.95, 5.425, 6.9),
-        3 -> Array(0.1, 0.7, 1.3, 1.9, 2.6))
+      0 -> Array(4.3, 5.2, 6.1, 7.0, 7.9),
+      1 -> Array(2.0, 2.6, 3.2, 3.8, 4.4),
+      2 -> Array(1.0, 2.475, 3.95, 5.425, 6.9),
+      3 -> Array(0.1, 0.7, 1.3, 1.9, 2.6))
     val fdtModel = FuzzyBinaryDecisionTree.train(traRdd, impurity, tNorm, maxDepth, maxBins,
       numClasses, categoricalFeaturesInfo, thresholdsFeatureInfo)
 
     FuzzyDecisionTreeSuite.validateClassifier(fdtModel, traArr.toSeq, 0.96)
     FuzzyDecisionTreeSuite.validateClassifier(fdtModel, tstArr.toSeq, 0.93)
 
-   }
+  }
 
   // Test 3.4: Test FDT in real iris dataset
   test("Test 3.4: Multiclass classification with continuous features: Fuzzy Binary Decision Tree and minimum tNorm") {
@@ -577,10 +577,10 @@ class FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
     val numClasses = 3
     val categoricalFeaturesInfo = Map.empty[Int, Int]
     val thresholdsFeatureInfo = Map(
-        0 -> Array(4.3, 5.2, 6.1, 7.0, 7.9),
-        1 -> Array(2.0, 2.6, 3.2, 3.8, 4.4),
-        2 -> Array(1.0, 2.475, 3.95, 5.425, 6.9),
-        3 -> Array(0.1, 0.7, 1.3, 1.9, 2.6))
+      0 -> Array(4.3, 5.2, 6.1, 7.0, 7.9),
+      1 -> Array(2.0, 2.6, 3.2, 3.8, 4.4),
+      2 -> Array(1.0, 2.475, 3.95, 5.425, 6.9),
+      3 -> Array(0.1, 0.7, 1.3, 1.9, 2.6))
     val fdtModel = FuzzyBinaryDecisionTree.train(traRdd, impurity, tNorm, maxDepth, maxBins,
       numClasses, categoricalFeaturesInfo, thresholdsFeatureInfo)
 
@@ -605,10 +605,10 @@ class FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
     val numClasses = 3
     val categoricalFeaturesInfo = Map.empty[Int, Int]
     val thresholdsFeatureInfo = Map(
-        0 -> Array(4.3, 5.2, 6.1, 7.0, 7.9),
-        1 -> Array(2.0, 2.6, 3.2, 3.8, 4.4),
-        2 -> Array(1.0, 2.475, 3.95, 5.425, 6.9),
-        3 -> Array(0.1, 0.7, 1.3, 1.9, 2.6))
+      0 -> Array(4.3, 5.2, 6.1, 7.0, 7.9),
+      1 -> Array(2.0, 2.6, 3.2, 3.8, 4.4),
+      2 -> Array(1.0, 2.475, 3.95, 5.425, 6.9),
+      3 -> Array(0.1, 0.7, 1.3, 1.9, 2.6))
     val fdtModel = FuzzyMultiDecisionTree.train(traRdd, impurity, tNorm, maxDepth, maxBins,
       numClasses, categoricalFeaturesInfo, thresholdsFeatureInfo)
 
@@ -633,15 +633,75 @@ class FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
     val numClasses = 3
     val categoricalFeaturesInfo = Map.empty[Int, Int]
     val thresholdsFeatureInfo = Map(
-        0 -> Array(4.3, 5.2, 6.1, 7.0, 7.9),
-        1 -> Array(2.0, 2.6, 3.2, 3.8, 4.4),
-        2 -> Array(1.0, 2.475, 3.95, 5.425, 6.9),
-        3 -> Array(0.1, 0.7, 1.3, 1.9, 2.6))
+      0 -> Array(4.3, 5.2, 6.1, 7.0, 7.9),
+      1 -> Array(2.0, 2.6, 3.2, 3.8, 4.4),
+      2 -> Array(1.0, 2.475, 3.95, 5.425, 6.9),
+      3 -> Array(0.1, 0.7, 1.3, 1.9, 2.6))
     val fdtModel = FuzzyMultiDecisionTree.train(traRdd, impurity, tNorm, maxDepth, maxBins,
       numClasses, categoricalFeaturesInfo, thresholdsFeatureInfo)
 
     FuzzyDecisionTreeSuite.validateClassifier(fdtModel, traArr.toSeq, 0.96)
     FuzzyDecisionTreeSuite.validateClassifier(fdtModel, tstArr.toSeq, 0.86)
+
+  }
+
+  // Test 3.7: Test FDT in real iris dataset
+  test("Test 3.7: Multiclass classification with continuous features: FBDT, product tNorm and node cardinality (crisp and fuzzy)") {
+    val (traArr, tstArr) = FuzzyDecisionTreeSuite.getIrisFromCsvToLabeledPoint
+    traArr.length should be (135)
+    tstArr.length should be (15)
+
+    // Run Fuzzy Binary Decision Tree
+    // We create uniform triangular fuzzy partitions (5 fuzzy sets for each feature)
+    val traRdd = sc.parallelize(traArr)
+    val impurity = "fuzzy_entropy"
+    val tNorm = "product"
+    val maxDepth = 5
+    val maxBins = 100
+    val numClasses = 3
+    val categoricalFeaturesInfo = Map.empty[Int, Int]
+    val thresholdsFeatureInfo = Map(
+      0 -> Array(4.3, 5.2, 6.1, 7.0, 7.9),
+      1 -> Array(2.0, 2.6, 3.2, 3.8, 4.4),
+      2 -> Array(1.0, 2.475, 3.95, 5.425, 6.9),
+      3 -> Array(0.1, 0.7, 1.3, 1.9, 2.6))
+    val minInstancesPerNode = 80
+    val minFuzzyInstancesPerNode = 50D
+    val fdtModel = FuzzyBinaryDecisionTree.train(traRdd, impurity, tNorm, maxDepth, maxBins,
+      numClasses, categoricalFeaturesInfo, thresholdsFeatureInfo, minInstancesPerNode,
+      minFuzzyInstancesPerNode = minFuzzyInstancesPerNode)
+
+    FuzzyDecisionTreeSuite.validateNodeCardinalities(fdtModel.topNode, minInstancesPerNode, minFuzzyInstancesPerNode)
+
+  }
+
+  // Test 3.8: Test FDT in real iris dataset
+  test("Test 3.8: Multiclass classification with continuous features: FMDT, product tNorm and node cardinality (crisp and fuzzy)") {
+    val (traArr, tstArr) = FuzzyDecisionTreeSuite.getIrisFromCsvToLabeledPoint
+    traArr.length should be (135)
+    tstArr.length should be (15)
+
+    // Run Fuzzy Binary Decision Tree
+    // We create uniform triangular fuzzy partitions (5 fuzzy sets for each feature)
+    val traRdd = sc.parallelize(traArr)
+    val impurity = "fuzzy_entropy"
+    val tNorm = "product"
+    val maxDepth = 5
+    val maxBins = 100
+    val numClasses = 3
+    val categoricalFeaturesInfo = Map.empty[Int, Int]
+    val thresholdsFeatureInfo = Map(
+      0 -> Array(4.3, 5.2, 6.1, 7.0, 7.9),
+      1 -> Array(2.0, 2.6, 3.2, 3.8, 4.4),
+      2 -> Array(1.0, 2.475, 3.95, 5.425, 6.9),
+      3 -> Array(0.1, 0.7, 1.3, 1.9, 2.6))
+    val minInstancesPerNode = 50
+    val minFuzzyInstancesPerNode = 50D
+    val fdtModel = FuzzyBinaryDecisionTree.train(traRdd, impurity, tNorm, maxDepth, maxBins,
+      numClasses, categoricalFeaturesInfo, thresholdsFeatureInfo, minInstancesPerNode,
+      minFuzzyInstancesPerNode = minFuzzyInstancesPerNode)
+
+    FuzzyDecisionTreeSuite.validateNodeCardinalities(fdtModel.topNode, minInstancesPerNode, minFuzzyInstancesPerNode)
 
   }
 
@@ -663,7 +723,7 @@ object FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
   def validateClassifier(
                           model: FuzzyDecisionTreeModel,
                           input: Seq[LabeledPoint],
-                          requiredAccuracy: Double) {
+                          requiredAccuracy: Double) = {
     val predictions = input.map(x => model.predictByMaxValue(x.features))
     val numOffPredictions = predictions.zip(input).count { case (prediction, expected) =>
       prediction != expected.label
@@ -673,9 +733,23 @@ object FuzzyDecisionTreeSuite extends FunSuite with SharedSparkContext {
       s"validateClassifier calculated accuracy $accuracy but required $requiredAccuracy.")
   }
 
+  def validateNodeCardinalities(node: iet.unipi.bigdatamining.classification.tree.model.Node,
+                                minInstancesPerNode: Int, minFuzzyInstancesPerNode: Double) {
+    if (node.numLeaves > 1){
+      assert(node.cardinality >= minInstancesPerNode,
+        s"Node validation error: number of instances at the node ${node.cardinality} " +
+          s"but required $minInstancesPerNode.")
+      assert(node.fuzzyCardinality >= minFuzzyInstancesPerNode,
+        s"Node validation error: number of instances at the node ${node.fuzzyCardinality} " +
+          s"but required $minFuzzyInstancesPerNode.")
+
+      node.sons.foreach(node => validateNodeCardinalities(node, minInstancesPerNode, minFuzzyInstancesPerNode))
+    }
+  }
+
   def validatePredictions(
-                         prediction1: Map[Int, Double],
-                         prediction2: Map[Int, Double]
+                           prediction1: Map[Int, Double],
+                           prediction2: Map[Int, Double]
                          ) = {
     val df = new DecimalFormat("#.######")
     df.setRoundingMode(RoundingMode.HALF_UP)

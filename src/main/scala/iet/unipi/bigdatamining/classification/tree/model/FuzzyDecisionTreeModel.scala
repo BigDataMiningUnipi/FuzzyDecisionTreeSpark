@@ -81,7 +81,7 @@ class FuzzyDecisionTreeModel (
   }
 
   /**
-    * Get number of nodes in tree, excluding root
+    * Get number of nodes in tree
     * and all nodes that doesn't have instances belongs to.
     *
     * @since 1.0

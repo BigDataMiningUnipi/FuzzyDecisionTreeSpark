@@ -19,7 +19,11 @@ import scala.collection.immutable.Map
   * @param thresholdsFeatureInfo a map that contains the continuous feature indexes as key
   *                                and the an array of points as value of the map.
   *                                Points represent the threshold on which build the fuzzy partition
-  * @param minInstancesPerNode minimum number of examples that each leaf must contain (default 1)
+  * @param minInstancesPerNode minimum number of examples to be inspected in the stop condition (default 1)
+  * @param minFuzzyInstancesPerNode minimum node fuzzy cardinality to be inspected in the stop condition,
+  *                                 where the <i>node fuzzy cardinality</i> is computed as the sum
+  *                                 of the membership degrees of all points in the dataset
+  *                                 from the root to the node
   * @param minImpurityRatioPerNode minimum ratio thresholds of impurity that must be true in each node
   *                                (default 0)
   * @param minInfoGain minimum information gain threshold that must be true in each node (default 0).
@@ -36,6 +40,7 @@ private[tree] class FDTStrategy(
    @BeanProperty var categoricalFeaturesInfo: Map[Int, Int] = Map.empty[Int, Int],
    @BeanProperty var thresholdsFeatureInfo: Map[Int, Array[Double]] = Map.empty[Int, Array[Double]],
    @BeanProperty var minInstancesPerNode: Int = 1,
+   @BeanProperty var minFuzzyInstancesPerNode: Double = 0D,
    @BeanProperty var minImpurityRatioPerNode: Double = 1D,
    @BeanProperty var minInfoGain: Double = 0.000001,
    @BeanProperty var subsamplingRate: Double = 1D,
@@ -91,6 +96,8 @@ private[tree] class FDTStrategy(
       s"Valid values are integers >= 2.")
     require(minInstancesPerNode >= 1,
       s"Fuzzy Decision Tree Strategy requires minInstancesPerNode >= 1 but was given $minInstancesPerNode")
+    require(minFuzzyInstancesPerNode >= 0,
+      s"Fuzzy Decision Tree Strategy requires minFuzzyInstancesPerNode >= 0 but was given $minFuzzyInstancesPerNode")
     require(minImpurityRatioPerNode > 0 && minImpurityRatioPerNode <= 1D,
       s"Fuzzy Decision Tree Strategy requires minImpurityRatioPerNode greater than 0 and less or equal then 1.0")
     require(maxMemoryInMB <= 10240,
@@ -107,7 +114,7 @@ private[tree] class FDTStrategy(
    */
   def copy: FDTStrategy = {
     new FDTStrategy(splitType, impurity, tNorm, maxDepth, maxBins, numClasses, categoricalFeaturesInfo,
-      thresholdsFeatureInfo, minInstancesPerNode, minImpurityRatioPerNode,
+      thresholdsFeatureInfo, minInstancesPerNode, minImpurityRatioPerNode, minFuzzyInstancesPerNode,
       minInfoGain, subsamplingRate, maxMemoryInMB)
   }
 

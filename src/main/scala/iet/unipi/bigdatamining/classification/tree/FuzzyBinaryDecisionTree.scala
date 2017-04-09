@@ -158,12 +158,13 @@ object FuzzyBinaryDecisionTree {
              categoricalFeaturesInfo: Map[Int, Int] = Map.empty[Int, Int],
              thresholdsFeatureInfo: Map[Int, Array[Double]] = Map.empty[Int, Array[Double]],
              minInstancesPerNode: Int = 1,
+             minFuzzyInstancesPerNode: Double = 0D,
              minImpurityRatioPerNode: Double = 1D,
              minInfoGain: Double = 0.000001,
              subsamplingRate: Double = 1D): FuzzyDecisionTreeModel = {
     val strategy = new FDTStrategy(SPLIT_TYPE, impurity, tNorm, maxDepth, maxBins, numClasses,
-      categoricalFeaturesInfo, thresholdsFeatureInfo, minInstancesPerNode, minImpurityRatioPerNode,
-      minInfoGain, subsamplingRate)
+      categoricalFeaturesInfo, thresholdsFeatureInfo, minInstancesPerNode, minFuzzyInstancesPerNode,
+      minImpurityRatioPerNode, minInfoGain, subsamplingRate)
     new FuzzyBinaryDecisionTree(strategy).run(input)
   }
 
@@ -182,6 +183,7 @@ object FuzzyBinaryDecisionTree {
                      thresholdsFeatureInfo: java.util.Map[java.lang.Integer, java.util.List[java.lang.Double]]
                         = new java.util.HashMap[java.lang.Integer, java.util.List[java.lang.Double]](),
                      minInstancesPerNode: java.lang.Integer = 1,
+                     minFuzzyInstancesPerNode: java.lang.Double = 0D,
                      minImpurityRatioPerNode: java.lang.Double = 1D,
                      minInfoGain: java.lang.Double = 0.000001,
                      subsamplingRate: java.lang.Double = 1D): FuzzyDecisionTreeModel = {
@@ -196,8 +198,8 @@ object FuzzyBinaryDecisionTree {
     train(input.rdd, impurity, tNorm, maxDepth.intValue(), maxBins.intValue(), numClasses.intValue(),
       categoricalFeaturesInfo.asInstanceOf[java.util.Map[Int, Int]].asScala.toMap,
       scalaThresholdsFeatureInfo.toMap, minInstancesPerNode.intValue(),
-      minImpurityRatioPerNode.doubleValue(), minInfoGain.doubleValue(),
-      subsamplingRate.doubleValue())
+      minFuzzyInstancesPerNode.doubleValue, minImpurityRatioPerNode.doubleValue(),
+      minInfoGain.doubleValue(), subsamplingRate.doubleValue())
   }
 
   /**
@@ -501,9 +503,12 @@ object FuzzyBinaryDecisionTree {
 
         val childIsLeaf = (BinaryNode.indexToLevel(nodeId) + 1) == metadata.maxDepth
         val leftChildIsLeaf = (childIsLeaf || (gainStats.leftImpurity <= 0D)
-          || (gainStats.leftPredict.totalFreq < metadata.minInstancesPerNode))
+          || (gainStats.leftPredict.totalFreq < metadata.minInstancesPerNode)
+          || (gainStats.leftPredict.totalU <= metadata.minFuzzyInstancesPerNode))
+
         val rightChildIsLeaf = (childIsLeaf || (gainStats.rightImpurity <= 0D)
-          || (gainStats.rightPredict.totalFreq < metadata.minInstancesPerNode))
+          || (gainStats.rightPredict.totalFreq < metadata.minInstancesPerNode)
+          || (gainStats.rightPredict.totalU <= metadata.minFuzzyInstancesPerNode))
         node.leftChild = Some(BinaryNode.apply(BinaryNode.leftChildIndex(nodeId),
           node.splitsHistory ++ Map[Int, Set[Int]]((split.feature, split.categoryIndexes.toSet)),
           gainStats.leftImpurity, leftChildIsLeaf,  gainStats.leftPredict))

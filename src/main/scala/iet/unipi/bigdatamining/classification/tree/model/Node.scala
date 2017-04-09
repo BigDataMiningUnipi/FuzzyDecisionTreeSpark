@@ -23,12 +23,24 @@ trait Node extends Serializable {
    * True if node is the root of the tree, false otherwise
    */
   def isRoot: Boolean
-  
+
   /**
-   * Return children of the node as arry
+   * Return children of the node as array
    */
   private[tree] def sons: Array[Node]
-  
+
+  /**
+    * Return the sum of the sum of the membership degrees
+    * of all points in the dataset from the root to the node
+    */
+  private[tree] def fuzzyCardinality: Double
+
+  /**
+    * Return the number of points in the dataset
+    * that fall from the root to the node
+    */
+  private[tree] def cardinality: Double
+
   /**
    * Returns a deep copy of the subtree rooted at this node.
    */
@@ -41,7 +53,8 @@ trait Node extends Serializable {
 
   /**
    * Get the number of leaves in tree below this node.
-   * Leaf with 0 instances are not considered
+   * Leaf with 0 instances are not considered.
+   * E.g., if this node is a leaf, returns 1.
    */
   private[tree] def numLeaves: Int
 

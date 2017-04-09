@@ -128,6 +128,22 @@ class MultiNode (
   private[tree] def sons: Array[Node] = children.map(_.get)
 
   /**
+    * Return the sum of the membership degrees
+    * of all points in the dataset from the root to the node
+    */
+  private[tree] def fuzzyCardinality: Double = {
+    predictStats.totalU
+  }
+
+  /**
+    * Return the number of points in the dataset
+    * that fall from the root to the node
+    */
+  private[tree] def cardinality: Double = {
+    predictStats.totalFreq.toInt
+  }
+
+  /**
     * Get a deep copy of the subtree rooted at this node.
     *
     * @return a deep copy of the subtree rooted at this node.

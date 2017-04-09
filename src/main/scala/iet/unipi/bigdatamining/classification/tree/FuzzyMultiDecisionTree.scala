@@ -154,12 +154,13 @@ object FuzzyMultiDecisionTree {
              categoricalFeaturesInfo: Map[Int, Int] = Map.empty[Int, Int],
              thresholdsFeatureInfo: Map[Int, Array[Double]] = Map.empty[Int, Array[Double]],
              minInstancesPerNode: Int = 1,
+             minFuzzyInstancesPerNode: Double = 0D,
              minImpurityRatioPerNode: Double = 1D,
              minInfoGain: Double = 0.000001,
              subsamplingRate: Double = 1D): FuzzyDecisionTreeModel = {
     val strategy = new FDTStrategy(SPLIT_TYPE, impurity, tNorm, maxDepth, maxBins, numClasses,
-      categoricalFeaturesInfo, thresholdsFeatureInfo, minInstancesPerNode, minImpurityRatioPerNode,
-      minInfoGain, subsamplingRate)
+      categoricalFeaturesInfo, thresholdsFeatureInfo, minInstancesPerNode, minFuzzyInstancesPerNode,
+      minImpurityRatioPerNode, minInfoGain, subsamplingRate)
     new FuzzyMultiDecisionTree(strategy).run(input)
   }
 
@@ -178,6 +179,7 @@ object FuzzyMultiDecisionTree {
                      thresholdsFeatureInfo: java.util.Map[java.lang.Integer, java.util.List[java.lang.Double]]
                         = new java.util.HashMap[java.lang.Integer, java.util.List[java.lang.Double]](),
                      minInstancesPerNode: java.lang.Integer = 1,
+                     minFuzzyInstancesPerNode: java.lang.Double = 0D,
                      minImpurityRatioPerNode: java.lang.Double = 1D,
                      minInfoGain: java.lang.Double = 0.000001,
                      subsamplingRate: java.lang.Double = 1D): FuzzyDecisionTreeModel = {
@@ -192,8 +194,8 @@ object FuzzyMultiDecisionTree {
     train(input.rdd, impurity, tNorm, maxDepth.intValue(), maxBins.intValue(), numClasses.intValue(),
       categoricalFeaturesInfo.asInstanceOf[java.util.Map[Int, Int]].asScala.toMap,
       scalaThresholdsFeatureInfo.toMap, minInstancesPerNode.intValue(),
-      minImpurityRatioPerNode.doubleValue(), minInfoGain.doubleValue(),
-      subsamplingRate.doubleValue())
+      minFuzzyInstancesPerNode.doubleValue(), minImpurityRatioPerNode.doubleValue(),
+      minInfoGain.doubleValue(), subsamplingRate.doubleValue())
   }
 
   /**
@@ -405,7 +407,8 @@ object FuzzyMultiDecisionTree {
         val childIsLeaf = childLevel == metadata.maxDepth
         val childrenAreLeaves = gainStats.childrenImpurity.indices.map{ i =>
           ((gainStats.childrenImpurity(i) <= 0D) || childIsLeaf
-            || (gainStats.childrenPredict(i).totalFreq < metadata.minInstancesPerNode))
+            || (gainStats.childrenPredict(i).totalFreq <= metadata.minInstancesPerNode)
+            || (gainStats.childrenPredict(i).totalU <= metadata.minFuzzyInstancesPerNode))
         }
         node.children = (0 until numBins).map{ binIndex =>
           Some(MultiNode(startNodeIdx + binIndex,

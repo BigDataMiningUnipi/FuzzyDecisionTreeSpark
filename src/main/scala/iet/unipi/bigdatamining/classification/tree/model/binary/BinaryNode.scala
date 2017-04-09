@@ -196,9 +196,25 @@ class BinaryNode(val id: Int,
   }
 
   /**
+    * Return the sum of the membership degrees
+    * of all points in the dataset from the root to the node
+    */
+  private[tree] def fuzzyCardinality: Double = {
+    predictStats.totalU
+  }
+
+  /**
+    * Return the number of points in the dataset
+    * that fall from the root to the node
+    */
+  private[tree] def cardinality: Double = {
+    predictStats.totalFreq.toInt
+  }
+
+  /**
     * Get the number of leaves in tree below this node.
     * Leaf with 0 instances are not considered
-    * E.g., if this is a leaf, returns 1.
+    * E.g., if this node is a leaf, returns 1.
     *
     * @return the number the leaves of the tree
     */
@@ -227,9 +243,9 @@ class BinaryNode(val id: Int,
 
   /**
     * Get the number of nodes in tree below this node, including leaf nodes.
-    * E.g. if this is a leaf, returns 0.  If both children are leaves, returns 2.
+    * E.g. if this node is a leaf, returns 1.  If both children are leaves, returns 3.
     *
-    * @return the number of children from this node to each leaf
+    * @return the number of children from this node to each leaf including the f
     */
   private[tree] def numDescendants: Int = if (isLeaf) 1
   else 1 + leftChild.get.numDescendants + rightChild.get.numDescendants
